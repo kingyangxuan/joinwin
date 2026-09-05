@@ -13,6 +13,10 @@ import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import ConversationListScreen from './src/screens/ConversationListScreen';
+import AdminScreen from './src/screens/AdminScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import StockDetailScreen from './src/screens/StockDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +68,10 @@ export default function App() {
               <>
                 <Stack.Screen name="Welcome" component={WelcomeScreen} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
+                <Stack.Screen name="ConversationList" component={ConversationListScreen} />
+                <Stack.Screen name="Admin" component={AdminScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="StockDetail" component={StockDetailScreen} />
               </>
             )}
           </Stack.Navigator>

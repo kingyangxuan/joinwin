@@ -21,6 +21,8 @@ const quickActions = [
   { icon: 'document-text', title: '文件解析', desc: 'PDF/Word/Excel 智能解读', color: '#3B82F6' },
   { icon: 'image', title: '图片识别', desc: '上传图片，AI 理解内容', color: '#8B5CF6' },
   { icon: 'mic', title: '语音对话', desc: '说话就能聊，解放双手', color: '#22C55E' },
+  { icon: 'time', title: '历史对话', desc: '查看之前的对话记录', color: '#F97316' },
+  { icon: 'person', title: '个人中心', desc: '设置、管理、关于', color: '#6B7280' },
 ];
 
 export default function WelcomeScreen() {
@@ -46,6 +48,14 @@ export default function WelcomeScreen() {
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {
+    if (action.title === '历史对话') {
+      navigation.navigate('ConversationList');
+      return;
+    }
+    if (action.title === '个人中心') {
+      navigation.navigate('Profile');
+      return;
+    }
     const messages: Record<string, string> = {
       '股票分析': '帮我分析一下今天的大盘走势',
       '文件解析': '我上传一个文件，帮我解读一下',
@@ -67,8 +77,10 @@ export default function WelcomeScreen() {
           />
           <Text style={styles.headerTitle}>Joinwin</Text>
         </View>
-        <TouchableOpacity style={styles.menuButton}>
-          <Ionicons name="menu" size={24} color={theme.colors.text} />
+        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.navigate('Profile')}>
+          <View style={styles.userAvatar}>
+            <Text style={styles.userAvatarText}>{user?.username?.charAt(0).toUpperCase() || 'U'}</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -182,6 +194,19 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: 6,
+  },
+  userAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userAvatarText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.textWhite,
   },
   scrollContent: {
     padding: 20,
