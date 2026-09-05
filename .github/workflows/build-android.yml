@@ -43,14 +43,19 @@ jobs:
           cd android
           ./gradlew assembleRelease --no-daemon
 
+      - name: Rename APKs
+        run: |
+          mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/joinwin-debug.apk
+          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/joinwin-release.apk
+
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-debug-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          path: android/app/build/outputs/apk/debug/joinwin-debug.apk
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-release-apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/release/joinwin-release.apk
