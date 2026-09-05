@@ -1,4 +1,4 @@
-package com.helloworld
+package com.joinwin
 
 import android.app.Application
 import android.content.res.Configuration
