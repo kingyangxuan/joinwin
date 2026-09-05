@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Joinwin",
+    "slug": "joinwin-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/lion.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/lion.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.joinwin.app"
+    },
+    "android": {
+      "package": "com.joinwin.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/lion.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/lion.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "允许 Joinwin 访问您的照片以进行图片识别"
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ]
+  }
+}
