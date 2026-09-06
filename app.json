@@ -16,11 +16,7 @@
       "bundleIdentifier": "com.joinwin.app"
     },
     "android": {
-      "package": "com.joinwin.app",
-      "adaptiveIcon": {
-        "foregroundImage": "./src/assets/lion.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "package": "com.joinwin"
     },
     "web": {
       "favicon": "./src/assets/lion.png"
