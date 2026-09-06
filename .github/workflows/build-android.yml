@@ -29,8 +29,13 @@ jobs:
       - name: Init React Native project
         run: npx react-native@0.74.5 init JoinwinApp --version 0.74.5 --directory JoinwinApp --skip-install
 
-      - name: Replace App.js
-        run: cp App.minimal.js JoinwinApp/App.js
+      - name: Copy full app source
+        run: |
+          cp full-app/App.js JoinwinApp/App.js
+          mkdir -p JoinwinApp/src
+          cp -r full-app/src/* JoinwinApp/src/
+          echo "源码复制完成"
+          ls -la JoinwinApp/src/screens/
 
       - name: Rename package
         run: |
@@ -44,7 +49,10 @@ jobs:
           sed -i 's/JoinwinApp/Joinwin/g' android/app/src/main/AndroidManifest.xml
 
       - name: Install dependencies
-        run: cd JoinwinApp && npm install
+        run: |
+          cd JoinwinApp
+          npm install
+          npm install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context react-native-gesture-handler @react-native-async-storage/async-storage
 
       - name: Build Debug APK
         run: |
