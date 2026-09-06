@@ -32,9 +32,16 @@ jobs:
       - name: Prebuild Android
         run: npx expo prebuild --platform android --no-install
 
-      - name: Fix Gradle version (use 8.8 for compatibility)
+      - name: Fix Gradle and AGP versions for compatibility
         run: |
-          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.8-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
+          # 降级 Gradle 到 8.6
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.6-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
+          # 降级 AGP 到 8.2.0
+          sed -i 's/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.2.0/g' android/build.gradle
+          sed -i 's/com.android.application version [0-9.]*/com.android.application version 8.2.0/g' android/build.gradle
+          echo "=== android/build.gradle ==="
+          cat android/build.gradle
+          echo "=== gradle-wrapper.properties ==="
           cat android/gradle/wrapper/gradle-wrapper.properties
 
       - name: Build Debug APK
