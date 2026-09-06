@@ -9,6 +9,10 @@ import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import ConversationListScreen from './src/screens/ConversationListScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import AdminScreen from './src/screens/AdminScreen';
+import StockDetailScreen from './src/screens/StockDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +31,10 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Main" component={WelcomeScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="ConversationList" component={ConversationListScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Admin" component={AdminScreen} />
+        <Stack.Screen name="StockDetail" component={StockDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
