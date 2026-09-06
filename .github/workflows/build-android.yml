@@ -32,6 +32,11 @@ jobs:
       - name: Prebuild Android
         run: npx expo prebuild --platform android --no-install
 
+      - name: Fix Gradle version (downgrade to 8.6 for compatibility)
+        run: |
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.6-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
+          cat android/gradle/wrapper/gradle-wrapper.properties
+
       - name: Build Debug APK
         run: |
           cd android
