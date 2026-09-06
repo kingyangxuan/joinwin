@@ -9,7 +9,11 @@ node_modules/
 .expo-shared/
 web-build/
 
-# Android
+# Android (CI 自动 prebuild 生成，不提交)
+android/
+ios/
+
+# Android 构建产物
 android/.gradle/
 android/build/
 android/app/build/
@@ -17,7 +21,7 @@ android/local.properties
 android/*.iml
 android/.idea/
 
-# iOS
+# iOS 构建产物
 ios/build/
 ios/Pods/
 ios/*.xcworkspace
