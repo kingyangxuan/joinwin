@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK (Pure React Native)
 
 on:
   push:
@@ -26,48 +26,79 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Prebuild Android
-        run: npx expo prebuild --platform android --no-install
-
-      - name: Fix Gradle and AGP versions for compatibility
+      - name: Create pure React Native project
         run: |
-          # 降级 Gradle 到 8.6
-          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.6-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
-          # 降级 AGP 到 8.2.0
-          sed -i 's/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.2.0/g' android/build.gradle
-          sed -i 's/com.android.application version [0-9.]*/com.android.application version 8.2.0/g' android/build.gradle
-          echo "=== android/build.gradle ==="
-          cat android/build.gradle
-          echo "=== gradle-wrapper.properties ==="
-          cat android/gradle/wrapper/gradle-wrapper.properties
+          # 用 react-native init 创建标准项目（不依赖 expo）
+          npx react-native@0.74.5 init JoinwinApp --version 0.74.5 --skip-install
+          cd JoinwinApp
+          # 替换为我们的最简 App
+          cat > App.js << 'EOF'
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Joinwin 启动成功！</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#F97316',
+  },
+});
+EOF
+          # 修改应用名和包名
+          sed -i 's/JoinwinApp/Joinwin/g' android/app/src/main/AndroidManifest.xml
+          sed -i 's/com.joinwinapp/com.joinwin/g' android/app/build.gradle
+          sed -i 's/com.joinwinapp/com.joinwin/g' android/app/src/main/AndroidManifest.xml
+          # 修改包名目录
+          mkdir -p android/app/src/main/java/com/joinwin
+          cp android/app/src/main/java/com/joinwinapp/*.kt android/app/src/main/java/com/joinwin/ 2>/dev/null || true
+          sed -i 's/package com.joinwinapp/package com.joinwin/g' android/app/src/main/java/com/joinwin/*.kt
+          rm -rf android/app/src/main/java/com/joinwinapp
+          echo "项目创建完成"
+          ls -la
+
+      - name: Install dependencies
+        run: |
+          cd JoinwinApp
+          npm install
 
       - name: Build Debug APK
         run: |
-          cd android
+          cd JoinwinApp/android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
       - name: Build Release APK
         run: |
-          cd android
+          cd JoinwinApp/android
           ./gradlew assembleRelease --no-daemon
 
       - name: Rename APKs
         run: |
-          mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/joinwin-debug.apk
-          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/joinwin-release.apk
+          mv JoinwinApp/android/app/build/outputs/apk/debug/app-debug.apk JoinwinApp/android/app/build/outputs/apk/debug/joinwin-debug.apk
+          mv JoinwinApp/android/app/build/outputs/apk/release/app-release.apk JoinwinApp/android/app/build/outputs/apk/release/joinwin-release.apk
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-debug-apk
-          path: android/app/build/outputs/apk/debug/joinwin-debug.apk
+          path: JoinwinApp/android/app/build/outputs/apk/debug/joinwin-debug.apk
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-release-apk
-          path: android/app/build/outputs/apk/release/joinwin-release.apk
+          path: JoinwinApp/android/app/build/outputs/apk/release/joinwin-release.apk
