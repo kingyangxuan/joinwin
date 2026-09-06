@@ -1,4 +1,4 @@
-name: Build Android APK (Pure React Native)
+name: Build Android APK
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -26,54 +26,25 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Create pure React Native project
+      - name: Init React Native project
+        run: npx react-native@0.74.5 init JoinwinApp --version 0.74.5 --directory JoinwinApp --skip-install
+
+      - name: Replace App.js
+        run: cp App.minimal.js JoinwinApp/App.js
+
+      - name: Rename package
         run: |
-          # 用 react-native init 创建标准项目（不依赖 expo）
-          npx react-native@0.74.5 init JoinwinApp --version 0.74.5 --skip-install
           cd JoinwinApp
-          # 替换为我们的最简 App
-          cat > App.js << 'EOF'
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Joinwin 启动成功！</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#F97316',
-  },
-});
-EOF
-          # 修改应用名和包名
-          sed -i 's/JoinwinApp/Joinwin/g' android/app/src/main/AndroidManifest.xml
           sed -i 's/com.joinwinapp/com.joinwin/g' android/app/build.gradle
           sed -i 's/com.joinwinapp/com.joinwin/g' android/app/src/main/AndroidManifest.xml
-          # 修改包名目录
           mkdir -p android/app/src/main/java/com/joinwin
-          cp android/app/src/main/java/com/joinwinapp/*.kt android/app/src/main/java/com/joinwin/ 2>/dev/null || true
+          cp android/app/src/main/java/com/joinwinapp/*.kt android/app/src/main/java/com/joinwin/
           sed -i 's/package com.joinwinapp/package com.joinwin/g' android/app/src/main/java/com/joinwin/*.kt
           rm -rf android/app/src/main/java/com/joinwinapp
-          echo "项目创建完成"
-          ls -la
+          sed -i 's/JoinwinApp/Joinwin/g' android/app/src/main/AndroidManifest.xml
 
       - name: Install dependencies
-        run: |
-          cd JoinwinApp
-          npm install
+        run: cd JoinwinApp && npm install
 
       - name: Build Debug APK
         run: |
@@ -88,17 +59,17 @@ EOF
 
       - name: Rename APKs
         run: |
-          mv JoinwinApp/android/app/build/outputs/apk/debug/app-debug.apk JoinwinApp/android/app/build/outputs/apk/debug/joinwin-debug.apk
-          mv JoinwinApp/android/app/build/outputs/apk/release/app-release.apk JoinwinApp/android/app/build/outputs/apk/release/joinwin-release.apk
+          cp JoinwinApp/android/app/build/outputs/apk/debug/app-debug.apk joinwin-debug.apk
+          cp JoinwinApp/android/app/build/outputs/apk/release/app-release.apk joinwin-release.apk
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-debug-apk
-          path: JoinwinApp/android/app/build/outputs/apk/debug/joinwin-debug.apk
+          path: joinwin-debug.apk
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: joinwin-release-apk
-          path: JoinwinApp/android/app/build/outputs/apk/release/joinwin-release.apk
+          path: joinwin-release.apk
