@@ -96,7 +96,12 @@ class ApiService {
   async sendMessage(messages, model = 'qwen3.6 35B') {
     return this.request('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ model, messages, stream: false }),
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false,
+        base: 'http://192.168.2.101:8000',
+      }),
     });
   }
 
